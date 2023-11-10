@@ -59,6 +59,12 @@ const readDir = (dir) => {
   });
 };
 
+/**
+ * Description: Extracts file name from absolute path
+ *
+ * @param {string} absolute path
+ * @return {string} filename
+ */
 const extractFileName = (fullName) => {
   const splitFullName = fullName.split(path.sep);
   return splitFullName[splitFullName.length - 1];
@@ -77,7 +83,7 @@ const grayScale = (pathIn, pathOut) => {
     const png = new PNG({ filterType: 4 });
     pipeline(
       createReadStream(pathIn),
-      png.on("parsed", function() {
+      png.on("parsed", function () {
         for (var y = 0; y < this.height; y++) {
           for (var x = 0; x < this.width; x++) {
             var idx = (this.width * y + x) << 2;
@@ -87,9 +93,10 @@ const grayScale = (pathIn, pathOut) => {
             this.data[idx + 2] = 255 - this.data[idx + 2];
           }
         }
-        this.pack().pipe(fs.createWriteStream(path.join(pathOut,extractFileName(pathIn))));
+        this.pack().pipe(
+          createWriteStream(path.join(pathOut, extractFileName(pathIn)))
+        );
       }),
-      createWriteStream(path.join(pathOut, extractFileName(pathIn))).on("finish", resolve),
       function (err) {
         if (err) {
           reject(err);
@@ -99,7 +106,14 @@ const grayScale = (pathIn, pathOut) => {
   });
 };
 
-const filter = (arr, pathOut) => {
+/**
+ * Description: read all the png files from given directory and return Promise containing array of each png file path
+ *
+ * @param {stringArray} array of absolute paths of images to be filtered
+ * @return {promiseArray} array of promises (images to be filtered by the function grayscale)
+ */
+
+const grayScaleFilter = (arr, pathOut) => {
   const imgsToBeFiltered = [];
   for (const imgPath of arr) {
     imgsToBeFiltered.push(grayScale(imgPath, pathOut));
@@ -111,5 +125,5 @@ module.exports = {
   unzip,
   readDir,
   grayScale,
-  filter,
+  grayScaleFilter,
 };

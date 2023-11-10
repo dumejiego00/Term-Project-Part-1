@@ -15,11 +15,17 @@ const zipFilePath = path.join(__dirname, "myfile.zip");
 const pathUnzipped = path.join(__dirname, "unzipped");
 const pathProcessed = path.join(__dirname, "grayscaled");
 
-IOhandler.unzip(zipFilePath, pathUnzipped)
-  .then(() => console.log("Extraction operation complete"))
-  .then(() => IOhandler.readDir(pathUnzipped))
-  .then((imgs) => {
+async function unzipThenGrayscale() {
+  try {
+    await IOhandler.unzip(zipFilePath, pathUnzipped);
+    console.log("Extraction operation complete");
+    const imgs = await IOhandler.readDir(pathUnzipped);
     Promise.all(IOhandler.grayScaleFilter(imgs, pathProcessed));
-  })
-  .then(() => console.log("All images has been gray scaled!"))
-  .catch((err) => console.log(err));
+    console.log("All images has been gray scaled!");
+  } catch (error) {
+    if (error) {
+      console.log(error);
+    }
+  }
+}
+unzipThenGrayscale();

@@ -85,15 +85,22 @@ const grayScale = (pathIn, pathOut) => {
         for (var y = 0; y < this.height; y++) {
           for (var x = 0; x < this.width; x++) {
             var idx = (this.width * y + x) << 2;
+            const r = this.data[idx];
+            const g = this.data[idx + 1];
+            const b = this.data[idx + 2];
+
+            const gray = (r + g + b) / 3;
             // invert color
-            this.data[idx] = 255 - this.data[idx];
-            this.data[idx + 1] = 255 - this.data[idx + 1];
-            this.data[idx + 2] = 255 - this.data[idx + 2];
+            this.data[idx] = gray;
+            this.data[idx + 1] = gray;
+            this.data[idx + 2] = gray;
           }
         }
-        this.pack().pipe(
-          createWriteStream(path.join(pathOut, extractFileName(pathIn)))
-        );
+        this.pack()
+          .pipe(createWriteStream(path.join(pathOut, extractFileName(pathIn))))
+          .on("finish", function () {
+            resolve();
+          });
       }),
       function (err) {
         if (err) {
@@ -122,6 +129,5 @@ const grayScaleFilter = (arr, pathOut) => {
 module.exports = {
   unzip,
   readDir,
-  grayScale,
   grayScaleFilter,
 };

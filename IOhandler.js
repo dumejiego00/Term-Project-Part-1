@@ -9,13 +9,11 @@
  */
 
 const AdmZip = require("adm-zip"),
-  fs = require("fs"),
+  fs = require("fs/promises"),
   PNG = require("pngjs").PNG,
   path = require("path");
 
 const { createReadStream, createWriteStream } = require("fs");
-const { create } = require("domain");
-const { readdir } = require("fs").promises;
 const { pipeline } = require("stream");
 const { Transform } = require("stream");
 /**
@@ -45,7 +43,7 @@ const unzip = (pathIn, pathOut) => {
  */
 const readDir = (dir) => {
   return new Promise((resolve, reject) => {
-    readdir(dir)
+    fs.readdir(dir)
       .then((list) => {
         let finalList = [];
         for (const file of list) {

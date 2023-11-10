@@ -21,5 +21,5 @@ IOhandler.unzip(zipFilePath, pathUnzipped)
   .then((imgs) => {
     Promise.all(IOhandler.grayScaleFilter(imgs, pathProcessed));
   })
-  .then(() => console.log("All images has been gray-scaled!"))
+  .then(() => console.log("All images has been gray scaled!"))
   .catch((err) => console.log(err));
